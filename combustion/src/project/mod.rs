@@ -3,6 +3,7 @@ mod error;
 use std::process::Command;
 use std::path::{PathBuf};
 use tar::Archive;
+use slog::Logger;
 
 pub use self::error::ProjectError;
 
@@ -50,23 +51,23 @@ impl Project {
         })
     }
 
-    pub fn build(&self) -> Result<(), ProjectError> {
+    pub fn build(&self, log: &Logger) -> Result<(), ProjectError> {
         // First build the assets if we need to
         self.build_assets()?;
 
         // Then, build all binaries
         for binary in &self.binaries {
             // TODO: Change to use logging
-            println!("Building \"{}\"", binary.file_name().unwrap().to_str().unwrap());
+            info!(log, "Building \"{}\"", binary.file_name().unwrap().to_str().unwrap());
             self.cargo_command(&binary, "build")?;
         }
 
         Ok(())
     }
 
-    pub fn run(&self) -> Result<(), ProjectError> {
+    pub fn run(&self, log: &Logger) -> Result<(), ProjectError> {
         // First run the build command
-        self.build()?;
+        self.build(log)?;
 
         // Find the game binary
         let mut main_binary = None;
@@ -85,7 +86,7 @@ impl Project {
         }
 
         // Then run that binary TODO: Change to use logging
-        println!("Running \"game\" binary");
+        info!(log, "Running \"game\" binary");
         self.cargo_command(&main_binary.unwrap(), "build")?;
 
         Ok(())

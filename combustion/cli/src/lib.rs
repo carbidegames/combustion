@@ -1,4 +1,6 @@
 extern crate clap;
+#[macro_use] extern crate slog;
+extern crate slog_term;
 extern crate combustion;
 
 mod build;
@@ -7,6 +9,7 @@ mod external;
 mod init;
 
 use clap::{App, SubCommand, AppSettings};
+use slog::DrainExt;
 
 use build::{subcommand_build, subcommand_run};
 use error::CliError;
@@ -14,6 +17,13 @@ use external::subcommand_external;
 use init::subcommand_init;
 
 pub fn run() {
+    // Initialize logging
+    let drain = slog_term::streamer()
+        .use_custom_timestamp(|_| Ok(()))
+        .build().fuse();
+    let log = slog::Logger::root(drain, o!());
+
+    // Process arguments
     let app = App::new("Combustion CLI")
         .version(env!("CARGO_PKG_VERSION"))
         .about("Command-line tool for interacting with a Combustion project.")
@@ -33,15 +43,17 @@ pub fn run() {
     // Run the chosen subcommand
     let result = match matches.subcommand() {
         ("init",  Some(matches)) => subcommand_init(matches),
-        ("build",  Some(matches)) => subcommand_build(matches),
-        ("run",  Some(matches)) => subcommand_run(matches),
+        ("build",  Some(matches)) => subcommand_build(matches, &log),
+        ("run",  Some(matches)) => subcommand_run(matches, &log),
         ("", _) => subcommand_missing(),
         (name, _) => subcommand_external(name),
     };
 
     // Make sure the command succeeded
     if let Err(err) = result {
-        println!("Error: {}", err.message);
+        crit!(log, err.message);
+    } else {
+        info!(log, "Done");
     }
 }
 

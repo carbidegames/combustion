@@ -5,3 +5,4 @@ authors = ["Layl <LaylConway@users.noreply.github.com>"]
 
 [dependencies]
 tar = "0.4.8"
+slog = "1.3.0"
