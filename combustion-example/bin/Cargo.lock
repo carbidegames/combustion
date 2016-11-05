@@ -1,0 +1,19 @@
+[root]
+name = "combustion-example"
+version = "0.1.0"
+dependencies = [
+ "combustion 0.1.0",
+ "combustion-glium 0.1.0",
+]
+
+[[package]]
+name = "combustion"
+version = "0.1.0"
+
+[[package]]
+name = "combustion-glium"
+version = "0.1.0"
+dependencies = [
+ "combustion 0.1.0",
+]
+

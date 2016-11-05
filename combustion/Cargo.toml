@@ -1,0 +1,7 @@
+[package]
+name = "combustion"
+version = "0.1.0"
+authors = ["Layl <LaylConway@users.noreply.github.com>"]
+
+[dependencies]
+tar = "0.4.8"

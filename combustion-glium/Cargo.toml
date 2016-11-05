@@ -1,0 +1,7 @@
+[package]
+name = "combustion-glium"
+version = "0.1.0"
+authors = ["Layl <LaylConway@users.noreply.github.com>"]
+
+[dependencies]
+combustion = { path = "../combustion" }
