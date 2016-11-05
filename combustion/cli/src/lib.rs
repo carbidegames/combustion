@@ -1,12 +1,14 @@
 extern crate clap;
 extern crate combustion;
 
+mod build;
 mod error;
 mod external;
 mod init;
 
-use clap::{Arg, App, SubCommand, AppSettings, ArgMatches};
+use clap::{App, SubCommand, AppSettings};
 
+use build::{subcommand_build, subcommand_run};
 use error::CliError;
 use external::subcommand_external;
 use init::subcommand_init;
@@ -17,20 +19,22 @@ pub fn run() {
         .about("Command-line tool for interacting with a Combustion project.")
         .setting(AppSettings::AllowExternalSubcommands)
         .setting(AppSettings::VersionlessSubcommands)
-        .subcommand(SubCommand::with_name("hello")
-            .about("Says hello")
-            .arg(Arg::with_name("message"))
-        )
         .subcommand(SubCommand::with_name("init")
             .about("Creates a new Combustion project in the current directory")
-            .arg(Arg::with_name("message"))
+        )
+        .subcommand(SubCommand::with_name("run")
+            .about("Builds a Combustion project")
+        )
+        .subcommand(SubCommand::with_name("run")
+            .about("Builds and executes a Combustion project")
         );
     let matches = app.get_matches();
 
     // Run the chosen subcommand
     let result = match matches.subcommand() {
-        ("hello",  Some(matches)) => subcommand_hello(matches),
         ("init",  Some(matches)) => subcommand_init(matches),
+        ("build",  Some(matches)) => subcommand_build(matches),
+        ("run",  Some(matches)) => subcommand_run(matches),
         ("", _) => subcommand_missing(),
         (name, _) => subcommand_external(name),
     };
@@ -39,17 +43,6 @@ pub fn run() {
     if let Err(err) = result {
         println!("Error: {}", err.message);
     }
-}
-
-fn subcommand_hello(matches: &ArgMatches) -> Result<(), CliError> {
-    let msg = if let Some(v) = matches.value_of("message") {
-        v
-    } else {
-        "Hello, world!"
-    };
-
-    println!("{}", msg);
-    Ok(())
 }
 
 fn subcommand_missing() -> Result<(), CliError> {

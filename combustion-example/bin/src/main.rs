@@ -11,4 +11,6 @@ fn main() {
     // Run the game
     let runtime = GameRuntime::start(stub);
     runtime.wait_for_close();
+
+    println!("Hello, World!");
 }

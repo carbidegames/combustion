@@ -1,6 +1,6 @@
 extern crate combustion;
 
-use combustion::RendererFactory as CRendererFactory;
+use combustion::runtime::RendererFactory as CRendererFactory;
 
 pub struct RendererFactory {
 }
