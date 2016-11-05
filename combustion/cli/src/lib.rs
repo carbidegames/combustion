@@ -20,6 +20,7 @@ pub fn run() {
     // Initialize logging
     let drain = slog_term::streamer()
         .use_custom_timestamp(|_| Ok(()))
+        .compact()
         .build().fuse();
     let log = slog::Logger::root(drain, o!());
 
@@ -53,11 +54,12 @@ pub fn run() {
     if let Err(err) = result {
         crit!(log, err.message);
     } else {
-        info!(log, "Done");
+        info!(log, "Completed successfully");
     }
 }
 
 fn subcommand_missing() -> Result<(), CliError> {
-    println!("A subcommand is required, run \"combustion help\" for help.");
-    Ok(())
+    Err(CliError {
+        message: "A subcommand is required, run \"combustion help\" for help.".into()
+    })
 }

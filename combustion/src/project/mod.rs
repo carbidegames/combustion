@@ -58,7 +58,7 @@ impl Project {
         // Then, build all binaries
         for binary in &self.binaries {
             // TODO: Change to use logging
-            info!(log, "Building \"{}\"", binary.file_name().unwrap().to_str().unwrap());
+            info!(log, "Building {}", binary.file_name().unwrap().to_str().unwrap());
             self.cargo_command(&binary, "build")?;
         }
 
@@ -81,12 +81,12 @@ impl Project {
         // Make sure we found it
         if main_binary.is_none() {
             return Err(ProjectError::InvalidProject {
-                message: "Couldn't find \"game\" binary in project".into()
+                message: "Couldn't find game binary in project".into()
             });
         }
 
         // Then run that binary TODO: Change to use logging
-        info!(log, "Running \"game\" binary");
+        info!(log, "Running game");
         self.cargo_command(&main_binary.unwrap(), "build")?;
 
         Ok(())
