@@ -1,8 +1,0 @@
-[package]
-name = "combustion-example"
-version = "0.1.0"
-authors = ["Layl <LaylConway@users.noreply.github.com>"]
-
-[dependencies]
-combustion = { path = "../../combustion" }
-combustion-glium = { path = "../../combustion-glium" }

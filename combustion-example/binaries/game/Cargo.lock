@@ -1,5 +1,5 @@
 [root]
-name = "combustion-example"
+name = "game"
 version = "0.1.0"
 dependencies = [
  "combustion 0.1.0",
