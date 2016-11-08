@@ -108,15 +108,20 @@ impl Project {
     }
 
     fn cargo_command(&self, path: &PathBuf, command: &str) -> Result<(), ProjectError> {
-        // TODO: Improve error handling
-        Command::new("cargo")
+        // Run the cargo command
+        let result = Command::new("cargo")
             .arg(command)
             .current_dir(path)
             .spawn()
             .expect("cargo failed to start")
             .wait()
-            .expect("cargo error'd out");
+            .expect("failed to wait for cargo to end");
 
-        Ok(())
+        // Return the Result
+        if result.success() {
+            Ok(())
+        } else {
+            Err(ProjectError::CargoError)
+        }
     }
 }

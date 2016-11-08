@@ -1,6 +1,7 @@
 pub enum ProjectError {
     InvalidTarget { message: String },
     InvalidProject { message: String },
+    CargoError,
     IoError { inner: ::std::io::Error },
 }
 

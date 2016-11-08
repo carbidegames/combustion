@@ -9,6 +9,7 @@ impl From<ProjectError> for CliError {
         let message = match error {
             ProjectError::InvalidTarget { message } => message,
             ProjectError::InvalidProject { message } => message,
+            ProjectError::CargoError => "An error occurred while running cargo".into(),
             ProjectError::IoError { inner } => format!("{}", inner),
         };
 
