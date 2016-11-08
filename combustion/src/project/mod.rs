@@ -17,9 +17,7 @@ impl Project {
         let path = path.into();
 
         // Make sure there's not already a project here
-        let mut toml_path = path.clone();
-        toml_path.push("Combustion.toml");
-        if toml_path.exists() {
+        if Self::is_project_dir(&path) {
             return Err(ProjectError::InvalidTarget {
                 message: format!("A project already exists at target path \"{}\"", path.display())
             });
@@ -38,6 +36,13 @@ impl Project {
     pub fn open<P: Into<PathBuf>>(path: P) -> Result<Project, ProjectError> {
         let path = path.into();
 
+        // Make sure there is a target here
+        if !Self::is_project_dir(&path) {
+            return Err(ProjectError::InvalidTarget {
+                message: format!("No project found at target path \"{}\"", path.display())
+            });
+        }
+
         // Scan the binaries folder for binaries
         let mut bin_path = path.clone();
         bin_path.push("binaries");
@@ -49,6 +54,12 @@ impl Project {
         Ok(Project {
             binaries: binaries
         })
+    }
+
+    pub fn is_project_dir<P: Into<PathBuf>>(path: P) -> bool {
+        let mut toml_path = path.into();
+        toml_path.push("Combustion.toml");
+        toml_path.exists()
     }
 
     pub fn build(&self, log: &Logger) -> Result<(), ProjectError> {
